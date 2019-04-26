@@ -1,11 +1,14 @@
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+
+import javax.lang.model.util.Types;
 
 public class CopyClass {
 
 	public static void main(String[] args)
-			throws ClassNotFoundException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+			throws ClassNotFoundException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException, InvocationTargetException, NoSuchMethodException {
 
 
 		Persona persona = new Persona();
@@ -19,27 +22,24 @@ public class CopyClass {
 
 		Method[] methods = clasePersona.getMethods();
 		System.out.println("Las propiedades publicas implementadas son:");
-		for (Method f : methods) {
-			f.setAccessible(true);
-			System.out.println("Metodo:"+f.getName());
+		for (Method m : methods) {
 			
+		    String nombreMetodo= m.getName();
+		    int isGet = nombreMetodo.indexOf("g");
+		    if(isGet ==0 )
+		    {
+		    	System.out.println("es una funcion Get");
+		    	nombreMetodo= nombreMetodo.replaceFirst("g", "s");
+		    	System.out.println(nombreMetodo);
+		    	if(m.getReturnType().equals(Long.class)) {
+		    		Long value = (Long) m.invoke(persona, null);
+		    		System.out.println("valor devuelto es:" +value);
+		    		Method methodInvokeforCopy =  claseCopyPersona.getMethod(nombreMetodo,Long.class);
+		    		methodInvokeforCopy.invoke(classReflection, value);
+		    		System.out.println("valor copiado es:" +classReflection.getId());
+		    	}
+		    }
 			
-			
-			Method methodForCopy = claseCopyPersona.getMethod(f.getName());
-			fieldCopy.setAccessible(true);
-			
-			
-			
-			if (f.getType().equals(Long.class)) { 
-				long var = 2;
-				fieldCopy.setLong(claseCopyPersona,  var);
-			}
-			else if (f.getType().equals(String.class)) 
-				fieldCopy.set(claseCopyPersona, f.get(persona));
-			else 
-				fieldCopy.set(claseCopyPersona, f.get(persona));
-			
-			System.out.println("valor copiado:" + fieldCopy.get(persona));
 		}
 		System.out.println();
 
