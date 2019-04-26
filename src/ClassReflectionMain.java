@@ -1,19 +1,21 @@
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import dto.PersonaDTO;
+
 public class ClassReflectionMain {
 
 	public static void main(String[] args) throws ClassNotFoundException, IllegalArgumentException, IllegalAccessException  {
  
         // 1 - Al usar el método Class.forname ()
-		Class c1 = Class.forName("ClassReflection");
+		Class c1 = Class.forName("PersonaDTO");
  
         // 2- Usando el método getClass ()
-		ClassReflection classReflection = new ClassReflection();
-		Class c2 = classReflection.getClass();
+		PersonaDTO personaDTO = new PersonaDTO();
+		Class c2 = personaDTO.getClass();
  
         // 3- Al usar .class
-		Class c3 = ClassReflection.class;
+		Class c3 = PersonaDTO.class;
 		
 		
 		// Imprimir el nombre de la clase
@@ -44,8 +46,8 @@ public class ClassReflectionMain {
         System.out.println("Las propiedades publicas implementadas son:");
         for(Field f:  fields) {
             System.out.println(f.getName() + "");
-            f.set(classReflection, "cargado por metodo reflextion");
-            System.out.println("get:=>>"+ f.get(classReflection));
+            f.set(personaDTO, "cargado por metodo ");
+            System.out.println("get:=>>"+ f.get(personaDTO));
         }
         System.out.println();
 //        El método getDeclaredFields () solo devuelve los metadatos de todas las variables de la clase especificada.

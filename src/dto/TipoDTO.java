@@ -1,10 +1,9 @@
+package dto;
 
-
-public class Persona {
+public class TipoDTO {
 	private Long id;
 	private String nombre;
-	private String apellido;
-
+	private String detalle;
 	public Long getId() {
 		return id;
 	}
@@ -17,13 +16,11 @@ public class Persona {
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-	public String getApellido() {
-		return apellido;
+	public String getDetalle() {
+		return detalle;
 	}
-	public void setApellido(String apellido) {
-		this.apellido = apellido;
+	public void setDetalle(String detalle) {
+		this.detalle = detalle;
 	}
-	
-	
 	
 }

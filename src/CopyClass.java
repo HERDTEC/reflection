@@ -5,22 +5,40 @@ import java.lang.reflect.Modifier;
 
 import javax.lang.model.util.Types;
 
+import domain.Persona;
+import domain.PersonaTipo;
+import domain.Tipo;
+import dto.PersonaDTO;
+import dto.PersonaTipoDTO;
+
 public class CopyClass {
 
 	public static void main(String[] args)
 			throws ClassNotFoundException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException, InvocationTargetException, NoSuchMethodException {
 
-
 		Persona persona = new Persona();
 		persona.setApellido("Cuichan");
 		persona.setId(1L);
 		persona.setNombre("Paul");
-		ClassReflection classReflection = new ClassReflection();
-		Class clasePersona = persona.getClass();
-		Class claseCopyPersona = classReflection.getClass();
+		//PersonaDTO personaDTO = new PersonaDTO();
+		//copiar(persona, personaDTO);
+		
+		PersonaTipo tipo = new PersonaTipo();
+		tipo.setPersona(persona);
+		tipo.setId(1L);
+		tipo.setTipo(null);
+		
+		PersonaTipoDTO personaTipoDTO = new PersonaTipoDTO();
+		copiar(tipo, personaTipoDTO);
+	}
+	
+	public static Object copiar(Object objetoPersistente,  Object objetoDTO ) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		
+		Class classObjectPersistent = objetoPersistente.getClass();
+		Class classObjectDTO = objetoDTO.getClass();
 
 
-		Method[] methods = clasePersona.getMethods();
+		Method[] methods = classObjectPersistent.getMethods();
 		System.out.println("Las propiedades publicas implementadas son:");
 		for (Method m : methods) {
 			
@@ -32,16 +50,32 @@ public class CopyClass {
 		    	nombreMetodo= nombreMetodo.replaceFirst("g", "s");
 		    	System.out.println(nombreMetodo);
 		    	if(m.getReturnType().equals(Long.class)) {
-		    		Long value = (Long) m.invoke(persona, null);
+		    		Long value = (Long) m.invoke(objetoPersistente, null);
 		    		System.out.println("valor devuelto es:" +value);
-		    		Method methodInvokeforCopy =  claseCopyPersona.getMethod(nombreMetodo,Long.class);
-		    		methodInvokeforCopy.invoke(classReflection, value);
-		    		System.out.println("valor copiado es:" +classReflection.getId());
+		    		Method methodInvokeforCopy =  classObjectDTO.getMethod(nombreMetodo,Long.class);
+		    		methodInvokeforCopy.invoke(objetoDTO, value);
+		    		
 		    	}
+		    	if(m.getReturnType().equals(String.class)) {
+		    		String value = (String) m.invoke(objetoPersistente, null);
+		    		System.out.println("valor devuelto es:" +value);
+		    		Method methodInvokeforCopy =  classObjectDTO.getMethod(nombreMetodo,String.class);
+		    		methodInvokeforCopy.invoke(objetoDTO, value);
+		    		
+		    	}
+		    	if(m.getReturnType().equals(Object.class)) {
+		    		
+		    		System.out.println("hay un objeto" );
+		    		
+		    	}
+		    	
 		    }
 			
 		}
 		System.out.println();
+		System.out.println("***********************************************************");
+		System.out.println(objetoDTO.toString());
+		return objetoDTO;
 
 	}
 
