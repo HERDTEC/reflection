@@ -40,8 +40,7 @@ public class PersonaDTO {
 	}
 	@Override
 	public String toString() {
-		return "PersonaDTO [id=" + id + ", nombre=" + nombre + ", apellido=" + apellido + ", personaTipo=" + personaTipo
-				+ "]";
+		return "PersonaDTO [id=" + id + "]";
 	}
 	
 	

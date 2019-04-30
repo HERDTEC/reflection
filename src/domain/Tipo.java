@@ -37,7 +37,7 @@ public class Tipo {
 	}
 	@Override
 	public String toString() {
-		return "Tipo [id=" + id + ", nombre=" + nombre + ", detalle=" + detalle + "]";
+		return "Tipo [id=" + id + "]";
 	}
 	
 	

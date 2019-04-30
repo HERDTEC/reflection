@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.lang.model.util.Types;
 
@@ -28,6 +30,15 @@ public class CopyClass {
 		persona.setApellido("Cuichan");
 		persona.setId(1L);
 		persona.setNombre("Paul");
+		
+		List<PersonaTipo> personasTipo= new ArrayList<PersonaTipo>();
+		PersonaTipo tipop = new PersonaTipo();
+		tipop.setPersona(persona);
+		tipop.setId(2L);
+		tipop.setTipo(new Tipo(2L,"x2","xxx2"));
+		personasTipo.add(tipop);
+		persona.setPersonaTipo(personasTipo);
+		
 		// PersonaDTO personaDTO = new PersonaDTO();
 		// copiar(persona, personaDTO);
 
@@ -39,8 +50,10 @@ public class CopyClass {
 		PersonaTipoDTO personaTipoDTO = new PersonaTipoDTO();
 
 		List<ObjectsValids> validos = new ArrayList<>();
-
+		
+		
 		validos.add(new ObjectsValids(Persona.class,PersonaDTO.class,new int[]{1}) );
+		validos.add(new ObjectsValids(PersonaTipo.class,PersonaTipoDTO.class,new int[]{2,3}) );
 		validos.add(new ObjectsValids(Tipo.class, TipoDTO.class,new int[]{2,1}) );
 
 		personaTipoDTO=(PersonaTipoDTO) copiar(tipo, personaTipoDTO, validos,1);
@@ -83,13 +96,12 @@ public class CopyClass {
 	}
 
 
-	public static Object copiar(Object objetoPersistente, Object objetoDTO, List<ObjectsValids> objectValids, int level)
+	@SuppressWarnings({ "unchecked", "null" })
+public static Object copiar(Object objetoPersistente, Object objetoDTO, List<ObjectsValids> objectValids, int level)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException,
 			SecurityException, ClassNotFoundException, InstantiationException {
-
 		Class classObjectPersistent = objetoPersistente.getClass();
 		Class classObjectDTO = objetoDTO.getClass();
-
 		Method[] methods = classObjectPersistent.getMethods();
 		System.out.println("-+-+--+-+--+-+--+-+--+-+--+-+--+-+--+-+--+-+--+-+--+-+--+-+--+-+--+-+--+-+--+-+--+-+--+-+-");
 		System.out.println("-+-+--+-+--+-+--+-+--+-+--+-+--+-+--+-+--+-+--+-+--+-+--+-+--+-+--+-+--+-+--+-+--+-+--+-+-");
@@ -105,32 +117,58 @@ public class CopyClass {
 				try {
 					
 			    	nombreMetodo= nombreOriginalMetodo.replaceFirst("g", "s");
-			    	/*if(m.getReturnType().equals(Long.class)) {
-			    		Long value = (Long) m.invoke(objetoPersistente, null);
-			    		if(value!=null)
+			    	System.out.println("+++++++++++++++++++++++++ "+nombreMetodo+" +++++++++++++++++++++++++");
+			    	ObjectsValids valido= compareArrayTypesWithLevel(m.getReturnType(), objectValids,level);
+			    	if(m.getReturnType().equals(List.class)){
+		    			System.out.println("OOOOOOOOOOOOOOOOOOOOO es una lista OOOOOOOOOOOOOOOOOOOOOOo");
+		    			Object valuesWthT =   m.invoke(objetoPersistente, null);
+		    			Class c = Class.forName(valuesWthT.getClass().getName());
+		    			Object values = c.newInstance();
+		    			values= m.invoke(objetoPersistente, null);
+		    			
+		    			
+		    			Class stringArrayComponentType = valuesWthT.getClass().getComponentType();
+		    			System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+		    			System.out.println(stringArrayComponentType.getClass());
+		    			
+		    			
+		    			List objListDTO=null;
+		    			((List)values).forEach(v->{
+		    				 System.out.println(level);
+		    			     ObjectsValids validoArr= compareArrayTypesWithLevel(v.getClass(), objectValids,level);
+		    			 	if(validoArr!=null) 
+		    			 	{
+		    			 		Class cfe;
+								try {
+									cfe = Class.forName(validoArr.getNewType().getTypeName());
+						    		Object objectIDTO = cfe.newInstance();
+						    		if(v!=null) {
+						    			objectIDTO=copiar(v, objectIDTO, objectValids,level+1);
+						    			objListDTO.add(objectIDTO);//
+						    		}
+								} catch (Exception e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								} 
+				    		}
+		    			 });
+		    			if(objListDTO!=null)
 			    		{
-				    		Method methodInvokeforCopy =  classObjectDTO.getMethod(nombreMetodo,Long.class);
-				    		methodInvokeforCopy.invoke(objetoDTO, value);
+			    			Method methodForGetClass = classObjectDTO.getMethod(nombreOriginalMetodo,null);
+			    			Method methodInvokeforCopy =  classObjectDTO.getMethod(nombreMetodo,methodForGetClass.getReturnType());
+			    			methodInvokeforCopy.invoke(objetoDTO, objListDTO);
 			    		}
-			    	}
-			    	else
-			    	if(m.getReturnType().equals(String.class)) {
-			    		String value = (String) m.invoke(objetoPersistente, null);
-			    		if(value!=null)
-			    		{
-			    			Method methodInvokeforCopy =  classObjectDTO.getMethod(nombreMetodo,String.class);
-			    			methodInvokeforCopy.invoke(objetoDTO, value);
-			    		}
-			    		
-			    	}
-			    	
-			    	else*/
-			    	if(compareArrayTypesWithLevel(m.getReturnType(), objectValids,level)!=null) 
+		    			System.out.println("OOOOOOOOOOOOOOOOOOOOO es una lista OOOOOOOOOOOOOOOOOOOOOOo");
+		    			
+		    			
+		    			
+		    			
+		    		}
+		    		else
+			    	if(valido!=null) 
 			    	{
-			    		ObjectsValids valido= compareArrayTypesWithLevel(m.getReturnType(), objectValids,level);
 			    		Class c = Class.forName(valido.getNewType().getTypeName());
 			    		Object objectIDTO = c.newInstance();
-			    		
 			    		c = Class.forName(valido.getType().getTypeName());
 			    		Object objectIPersistent = c.newInstance();
 			    		objectIPersistent=m.invoke(objetoPersistente, null);
@@ -151,8 +189,9 @@ public class CopyClass {
 			    		}
 			    		
 			    	}
+
 				} catch (NoSuchMethodException e) {
-					System.out.println("-------------------------------------------------------");
+					System.out.println("-----------------------"+nombreOriginalMetodo+"---------------------------");
 					System.out.println("EEEEEEEEEEEEEEEEE  PROPIEDADES FUERA DE COPIA    EEEEEEEEEEEEEEEEE");
 					System.out.println("-------------------------------------------------------");
 				}

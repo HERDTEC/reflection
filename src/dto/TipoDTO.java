@@ -26,7 +26,7 @@ public class TipoDTO {
 	
 	@Override
 	public String toString() {
-		return "TipoDTO [id=" + id + ", nombre=" + nombre + ", detalle=" + detalle + "]";
+		return "TipoDTO [id=" + id  + "]";
 	}
 	public TipoDTO(Long id, String nombre, String detalle) {
 		
