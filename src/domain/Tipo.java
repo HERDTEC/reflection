@@ -7,6 +7,11 @@ public class Tipo {
 	public Long getId() {
 		return id;
 	}
+	
+	public Tipo() {
+		
+	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -22,5 +27,19 @@ public class Tipo {
 	public void setDetalle(String detalle) {
 		this.detalle = detalle;
 	}
+	
+
+	public Tipo(Long id, String nombre, String detalle) {
+		super();
+		this.id = id;
+		this.nombre = nombre;
+		this.detalle = detalle;
+	}
+	@Override
+	public String toString() {
+		return "Tipo [id=" + id + ", nombre=" + nombre + ", detalle=" + detalle + "]";
+	}
+	
+	
 	
 }

@@ -23,4 +23,19 @@ public class TipoDTO {
 		this.detalle = detalle;
 	}
 	
+	
+	@Override
+	public String toString() {
+		return "TipoDTO [id=" + id + ", nombre=" + nombre + ", detalle=" + detalle + "]";
+	}
+	public TipoDTO(Long id, String nombre, String detalle) {
+		
+		this.id = id;
+		this.nombre = nombre;
+		this.detalle = detalle;
+	}
+	public TipoDTO() {
+		
+	}
+	
 }

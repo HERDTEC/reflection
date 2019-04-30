@@ -23,5 +23,10 @@ public class PersonaTipoDTO {
 	public void setTipo(TipoDTO tipo) {
 		this.tipo = tipo;
 	}
+	@Override
+	public String toString() {
+		return "PersonaTipoDTO [id=" + id + ", persona=" + persona + ", tipo=" + tipo + "]";
+	}
+
 	
 }

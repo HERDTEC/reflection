@@ -9,6 +9,9 @@ public class PersonaDTO {
 	private List<PersonaTipoDTO> personaTipo;
 	
 
+	public PersonaDTO() {
+		
+	}
 	public Long getId() {
 		return id;
 	}
