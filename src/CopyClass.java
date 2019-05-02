@@ -1,3 +1,4 @@
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -121,30 +122,47 @@ public static Object copiar(Object objetoPersistente, Object objetoDTO, List<Obj
 			    	ObjectsValids valido= compareArrayTypesWithLevel(m.getReturnType(), objectValids,level);
 			    	if(m.getReturnType().equals(List.class)){
 		    			System.out.println("OOOOOOOOOOOOOOOOOOOOO es una lista OOOOOOOOOOOOOOOOOOOOOOo");
-		    			Object valuesWthT =   m.invoke(objetoPersistente, null);
-		    			Class c = Class.forName(valuesWthT.getClass().getName());
-		    			Object values = c.newInstance();
-		    			values= m.invoke(objetoPersistente, null);
+		    			List values=   (List) m.invoke(objetoPersistente, null);
+		    			System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:::"+((List)values).size());
+		    			Method metodoDTO=  classObjectDTO.getMethod(nombreOriginalMetodo, null);
+		    			System.out.println("xxx"+ metodoDTO.getReturnType());
 		    			
+		    			Object valuesArrayDTO =Array.newInstance(metodoDTO.getReturnType(),((List)values).size());
 		    			
-		    			Class stringArrayComponentType = valuesWthT.getClass().getComponentType();
-		    			System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-		    			System.out.println(stringArrayComponentType.getClass());
+		    			System.out.println("xxx"+ valuesArrayDTO.getClass());
 		    			
+//		    			if(values!=null)
+//				    		{
+//				    			
+//				    			Method methodInvokeforCopy =  classObjectDTO.getMethod(nombreMetodo,metodoDTO.getReturnType());
+//				    			methodInvokeforCopy.invoke(objetoDTO, values);
+//				    		}
 		    			
-		    			List objListDTO=null;
+		    			Class classInternalObject= ((List)values).get(0).getClass();
+		    			ObjectsValids validateInternalComponent= compareArrayTypesWithLevel(classInternalObject, objectValids,level);
+		    			Object valuesProcessDTO  = Array.newInstance(validateInternalComponent.getNewType().getClass(),  ((List)values).size());
 		    			((List)values).forEach(v->{
-		    				 System.out.println(level);
-		    			     ObjectsValids validoArr= compareArrayTypesWithLevel(v.getClass(), objectValids,level);
-		    			 	if(validoArr!=null) 
+		    				System.out.println("zzzz  "+ v.getClass());
+		    			    System.out.println("zzzz  "+ validateInternalComponent.getNewType());
+		    			 	if(validateInternalComponent!=null) 
 		    			 	{
 		    			 		Class cfe;
-								try {
-									cfe = Class.forName(validoArr.getNewType().getTypeName());
-						    		Object objectIDTO = cfe.newInstance();
+								try {					
+									System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "+validateInternalComponent.getNewType());
+									System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "+ validateInternalComponent.getNewType());
+									Class cf= Class.forName("PersonaTipoDTO");
+						    		Object objectInternalDTO =cf.newInstance();
+						    		 System.out.println("zzzz  "+ objectInternalDTO.toString());
 						    		if(v!=null) {
-						    			objectIDTO=copiar(v, objectIDTO, objectValids,level+1);
-						    			objListDTO.add(objectIDTO);//
+						    			objectInternalDTO=copiar(v, objectInternalDTO, objectValids,level+1);
+						    			System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ");
+						    			
+						    			System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ");
+						    			System.out.println("zzzz pers "+ v.toString());
+						    			System.out.println("zzzz dto "+ objectInternalDTO.toString());
+						    			//valuesProcessDTO.add(objectInternalDTO);//
+						    			 
+						    			Array.set(valuesProcessDTO, 0, objectInternalDTO);
 						    		}
 								} catch (Exception e) {
 									// TODO Auto-generated catch block
@@ -152,15 +170,45 @@ public static Object copiar(Object objetoPersistente, Object objetoDTO, List<Obj
 								} 
 				    		}
 		    			 });
-		    			if(objListDTO!=null)
-			    		{
-			    			Method methodForGetClass = classObjectDTO.getMethod(nombreOriginalMetodo,null);
-			    			Method methodInvokeforCopy =  classObjectDTO.getMethod(nombreMetodo,methodForGetClass.getReturnType());
-			    			methodInvokeforCopy.invoke(objetoDTO, objListDTO);
-			    		}
-		    			System.out.println("OOOOOOOOOOOOOOOOOOOOO es una lista OOOOOOOOOOOOOOOOOOOOOOo");
-		    			
-		    			
+		    			//System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:::"+valuesProcessDTO.toString());
+//		    			System.out.println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx:::"+((List)values).size());
+//		    			Class c = Class.forName(valuesWthT.getClass().getName());
+//		    			Object values = c.newInstance();
+//		    			values= m.invoke(objetoPersistente, null);
+//		    			
+//		    			
+//		    			
+//		    			
+//		    			
+//		    			List objListDTO=null;
+//		    			((List)values).forEach(v->{
+//		    				 System.out.println(level);
+//		    			     ObjectsValids validoArr= compareArrayTypesWithLevel(v.getClass(), objectValids,level);
+//		    			 	if(validoArr!=null) 
+//		    			 	{
+//		    			 		Class cfe;
+//								try {
+//									cfe = Class.forName(validoArr.getNewType().getTypeName());
+//						    		Object objectIDTO = cfe.newInstance();
+//						    		if(v!=null) {
+//						    			objectIDTO=copiar(v, objectIDTO, objectValids,level+1);
+//						    			objListDTO.add(objectIDTO);//
+//						    		}
+//								} catch (Exception e) {
+//									// TODO Auto-generated catch block
+//									e.printStackTrace();
+//								} 
+//				    		}
+//		    			 });
+//		    			if(objListDTO!=null)
+//			    		{
+//			    			Method methodForGetClass = classObjectDTO.getMethod(nombreOriginalMetodo,null);
+//			    			Method methodInvokeforCopy =  classObjectDTO.getMethod(nombreMetodo,methodForGetClass.getReturnType());
+//			    			methodInvokeforCopy.invoke(objetoDTO, objListDTO);
+//			    		}
+//		    			System.out.println("OOOOOOOOOOOOOOOOOOOOO es una lista OOOOOOOOOOOOOOOOOOOOOOo");
+//		    			
+//		    			
 		    			
 		    			
 		    		}

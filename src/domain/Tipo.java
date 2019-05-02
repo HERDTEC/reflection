@@ -8,9 +8,6 @@ public class Tipo {
 		return id;
 	}
 	
-	public Tipo() {
-		
-	}
 
 	public void setId(Long id) {
 		this.id = id;
@@ -28,6 +25,9 @@ public class Tipo {
 		this.detalle = detalle;
 	}
 	
+
+	public Tipo() {
+	}
 
 	public Tipo(Long id, String nombre, String detalle) {
 		super();

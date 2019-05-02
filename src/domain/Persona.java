@@ -35,6 +35,17 @@ public class Persona {
 	public void setPersonaTipo(List<PersonaTipo> personaTipo) {
 		this.personaTipo = personaTipo;
 	}
+	
+	public Persona(Long id, String nombre, String apellido, List<PersonaTipo> personaTipo) {
+
+		this.id = id;
+		this.nombre = nombre;
+		this.apellido = apellido;
+		this.personaTipo = personaTipo;
+	}
+	
+	public Persona() {
+	}
 	@Override
 	public String toString() {
 		return "Persona [id=" + id 
