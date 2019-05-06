@@ -1,4 +1,4 @@
-package domain;
+package util.dto;
 
 import java.lang.reflect.Type;
 import java.util.List;
